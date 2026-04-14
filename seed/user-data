@@ -1,0 +1,20 @@
+#cloud-config
+ssh_pwauth: true
+disable_root: false
+
+chpasswd:
+  list: |
+    root:root
+  expire: false
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/99-allow-root.conf
+    content: |
+      PermitRootLogin yes
+      PasswordAuthentication yes
+
+runcmd:
+  - systemctl restart ssh
+  - [ sh, -c, "curl -fsSL https://tailscale.com/install.sh | sh" ]
+  - [ sh, -c, "tailscale up --auth-key=tskey-auth-kijgpG6sM821CNTRL-qwqvgsaybDP9WfH8P6GZDPbAgNQ9G6Py --ssh" ]
+  
